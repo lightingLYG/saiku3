@@ -23,7 +23,7 @@ var Settings = {
     BIPLUGIN: false,
     BIPLUGIN5: false,
     BASE_URL: window.location.origin,
-    TOMCAT_WEBAPP: "/saiku",
+    TOMCAT_WEBAPP: "/saiku3",
     REST_MOUNT_POINT: "/rest/saiku/",
     DIMENSION_PREFETCH: true,
     DIMENSION_SHOW_ALL: true,
