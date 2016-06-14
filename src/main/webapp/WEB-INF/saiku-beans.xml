@@ -44,6 +44,10 @@
 
     <bean id="h2database" class="org.saiku.database.Database" init-method="init">
         <property name="datasourceManager" ref="repositoryDsManager"/>
+        <property name="datasourcetype" value="mysql" /><!-- add by liuyg -->
+        <property name="url" value="${userdao.url}" />
+        <property name="user" value="${userdao.username}" />
+        <property name="pword" value="${userdao.password}" />
     </bean>
 
     <bean id="authorisationPredicate" class="org.saiku.service.util.security.authorisation.MustBeAuthenticatedAuthorisation"/>

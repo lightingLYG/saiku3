@@ -1,18 +1,5 @@
 package org.saiku.database;
 
-import org.apache.commons.io.FileUtils;
-
-import org.saiku.datasources.datasource.SaikuDatasource;
-import org.saiku.service.datasource.IDatasourceManager;
-import org.saiku.service.importer.LegacyImporter;
-import org.saiku.service.importer.LegacyImporterImpl;
-
-import org.h2.jdbcx.JdbcDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,6 +17,19 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FileUtils;
+import org.h2.jdbcx.JdbcDataSource;
+import org.saiku.datasources.datasource.SaikuDatasource;
+import org.saiku.service.datasource.IDatasourceManager;
+import org.saiku.service.importer.LegacyImporter;
+import org.saiku.service.importer.LegacyImporterImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
 
 /**
  * Created by bugg on 01/05/14.
@@ -39,11 +39,40 @@ public class Database {
     @Autowired
     ServletContext servletContext;
 
-    private JdbcDataSource ds;
+    private MysqlDataSource ds;
     private static final Logger log = LoggerFactory.getLogger(Database.class);
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private IDatasourceManager dsm;
-    public Database() {
+    
+	private String url ;
+	private String user ;
+	private String pword ;
+    
+    public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getPword() {
+		return pword;
+	}
+
+	public void setPword(String pword) {
+		this.pword = pword;
+	}
+
+	public Database() {
 
     }
 
@@ -67,14 +96,27 @@ public class Database {
         loadLegacyDatasources();
     }
 
-    private void initDB() {
-        String url = servletContext.getInitParameter("db.url");
+    private String datasourcetype;
+    public String getDatasourcetype() {
+		return datasourcetype;
+	}
+
+	public void setDatasourcetype(String datasourcetype) {
+		this.datasourcetype = datasourcetype;
+	}
+
+	private void initDB() {
+		ds = new MysqlDataSource();
+    	((MysqlDataSource) ds).setUrl(url);
+        ((MysqlDataSource) ds).setUser(user);
+        ((MysqlDataSource) ds).setPassword(pword);
+        /*String url = servletContext.getInitParameter("db.url");
         String user = servletContext.getInitParameter("db.user");
         String pword = servletContext.getInitParameter("db.password");
         ds = new JdbcDataSource();
         ds.setURL(url);
         ds.setUser(user);
-        ds.setPassword(pword);
+        ds.setPassword(pword);*/
     }
 
     private void loadFoodmart() throws SQLException {
@@ -219,7 +261,7 @@ public class Database {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }
-    private void loadUsers() throws SQLException {
+ /*   private void loadUsers() throws SQLException {
 
         Connection c = ds.getConnection();
 
@@ -295,8 +337,68 @@ public class Database {
 
         statement.execute("INSERT INTO LOG(log) VALUES('update passwords');");
 
+    }*/
+    //------------------------------------------add by liuyg---------------------------
+    private void loadUsers() throws SQLException {
+        
+        Connection c = ds.getConnection();
+      
+        Statement statement = c.createStatement();
+        
+        statement.execute(" CREATE TABLE IF NOT EXISTS log ( time  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, log  TEXT); ");
+        statement.execute(" CREATE TABLE IF NOT EXISTS users(user_id INT(11) NOT NULL AUTO_INCREMENT, " + " username VARCHAR(45) NOT NULL UNIQUE, password VARCHAR(100) NOT NULL, email VARCHAR(100), " + " enabled TINYINT NOT NULL DEFAULT 1, PRIMARY KEY(user_id)); ");
+        statement.execute(" CREATE TABLE IF NOT EXISTS user_roles ( " + " user_role_id INT(11) NOT NULL AUTO_INCREMENT,username VARCHAR(45), "  + " user_id INT(11) NOT NULL REFERENCES users(user_id), " + " ROLE VARCHAR(45) NOT NULL, " + " PRIMARY KEY (user_role_id)); ");
+    
+        ResultSet result = statement.executeQuery("select count(*) as c from log where log = 'insert users'");
+        
+        result.next();
+        
+        if (result.getInt("c") == 0) {
+            
+            statement.execute("INSERT INTO users (username,password,email, enabled) VALUES ('admin','admin', 'test@admin.com',TRUE);");
+            statement.execute("INSERT INTO users (username,password,enabled) VALUES ('smith','smith', TRUE);");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (1, 'admin', 'ROLE_USER');");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (1, 'admin', 'ROLE_ADMIN');");
+            statement.execute("INSERT INTO user_roles (user_id, username, ROLE) VALUES (2, 'smith', 'ROLE_USER');");
+            statement.execute("INSERT INTO log (log) VALUES('insert users');");
+        }
+
+        String encrypt = servletContext.getInitParameter("db.encryptpassword");
+        if (encrypt.equals("true") && !checkUpdatedEncyption()) {
+            updateForEncyption();
+        }
     }
 
+ 
+    public boolean checkUpdatedEncyption() throws SQLException{
+        Connection c = ds.getConnection();
+        Statement statement = c.createStatement();
+        ResultSet result = statement.executeQuery("select count(*) as c from log where log = 'update passwords'");
+        result.next();
+        return result.getInt("c") != 0;
+    }
+ 
+    public void updateForEncyption() throws SQLException {
+        
+        Connection c = ds.getConnection();
+        Statement statement = c.createStatement();
+        statement.execute("ALTER TABLE users MODIFY COLUMN PASSWORD VARCHAR(100) DEFAULT NULL");
+        ResultSet result = statement.executeQuery("select username, password from users");
+        while (result.next()) {
+            statement = c.createStatement();
+            String pword = result.getString("password");
+            String hashedPassword = passwordEncoder.encode(pword);
+            String sql = "UPDATE users " + "SET password = '" + hashedPassword
+                    + "' WHERE username = '" + result.getString("username")
+                    + "'";
+            statement.executeUpdate(sql);
+        }
+        statement = c.createStatement();
+        statement.execute("INSERT INTO log (log) VALUES('update passwords');");
+    }
+    
+    
+    //------------------------------------------add by liuyg---------------------------
     private void loadLegacyDatasources() throws SQLException {
         Connection c = ds.getConnection();
 

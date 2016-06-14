@@ -10,7 +10,7 @@
 		<param-name>encoding</param-name>
 		<param-value>UTF-8</param-value>
 	</context-param>
-    <context-param>
+    <!-- <context-param>
         <param-name>db.url</param-name>
         <param-value>jdbc:h2:../../data/saiku;MODE=MySQL</param-value>
     </context-param>
@@ -21,7 +21,10 @@
     <context-param>
         <param-name>db.password</param-name>
         <param-value></param-value>
-    </context-param>
+    </context-param> -->
+    <!-- add by liuyg -->
+	  
+	  
     <context-param>
         <param-name>db.encryptpassword</param-name>
         <param-value>true</param-value>
