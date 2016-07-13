@@ -10,7 +10,7 @@
 	<distributionManagement><!--add by liuyg -->
 		<snapshotRepository>
 			<id>snapshots-host</id>
-			<url>http://nexus.firewarm.cn:8081/nexus/content/repositories/snapshots-host/</url>
+			<url>http://nexus.liuyingguang.cn:8081/nexus/content/repositories/snapshots-host/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<properties>
@@ -41,7 +41,7 @@
 			<id>mine</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://nexus.firewarm.cn:8081/nexus/content/groups/public/</url>
+			<url>http://nexus.liuyingguang.cn:8081/nexus/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -60,13 +60,13 @@
 			<id>mine</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://101.87.247.112:8081/nexus/content/groups/public/</url>
+			<url>http://nexus.liuyingguang.cn:8081/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>mine-meteorite-bi-release</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://101.87.247.112:8081/nexus/content/repositories/meteorite-bi-release/</url>
+			<url>http://nexus.liuyingguang.cn:8081/nexus/content/repositories/meteorite-bi-release/</url>
 		</repository>
 
 		<repository>
@@ -1004,7 +1004,7 @@
 			</exclusions>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-core</artifactId>
 			<version>${calcite.version}</version>
@@ -1018,7 +1018,7 @@
 			<groupId>org.apache.calcite</groupId>
 			<artifactId>calcite-mongodb</artifactId>
 			<version>${calcite.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.cenqua.clover</groupId>
 			<artifactId>clover</artifactId>
