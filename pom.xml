@@ -10,7 +10,7 @@
 	<distributionManagement><!--add by liuyg -->
 		<snapshotRepository>
 			<id>snapshots-host</id>
-			<url>http://nexus.liuyingguang.cn:8081/nexus/content/repositories/snapshots-host/</url>
+			<url>http://nexus.liuyingguang.cn:8081/content/repositories/snapshots-host/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<properties>
@@ -41,7 +41,7 @@
 			<id>mine</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://nexus.liuyingguang.cn:8081/nexus/content/groups/public/</url>
+			<url>http://nexus.liuyingguang.cn:8081/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -60,13 +60,13 @@
 			<id>mine</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://nexus.liuyingguang.cn:8081/nexus/content/groups/public/</url>
+			<url>http://nexus.liuyingguang.cn:8081/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>mine-meteorite-bi-release</id>
 			<name>public Releases</name>
 			<layout>default</layout>
-			<url>http://nexus.liuyingguang.cn:8081/nexus/content/repositories/meteorite-bi-release/</url>
+			<url>http://nexus.liuyingguang.cn:8081/content/repositories/meteorite-bi-release/</url>
 		</repository>
 
 		<repository>

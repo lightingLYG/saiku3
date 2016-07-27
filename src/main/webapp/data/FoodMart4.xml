@@ -826,7 +826,7 @@
     <!-- Cubes for compatibility with old FoodMart. Will put them
          in a new schema at some point. -->
 
-    <Cube name='Warehouse'>
+    <Cube name='Warehouse中文'>
         <Dimensions>
             <Dimension source='Store'/>
             <Dimension source='Time'/>
