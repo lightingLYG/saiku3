@@ -12,6 +12,9 @@ saiku 研究学习交流群： 495266201
 
 Saiku and the Saiku UI are free software. The UI, contained in this repository, is available under the terms of the Apache License Version 2. A copy is attached for your convenience.
 
+# change note(20160812)：
+1. modify jar dependency 
 
 # change note(20160614)：
 1. modify user DB(h2) to MySQL 
+
